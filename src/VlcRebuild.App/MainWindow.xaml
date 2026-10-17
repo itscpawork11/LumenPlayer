@@ -53,29 +53,26 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <vlc:VideoView x:Name="VideoSurface" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                    <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Style="{StaticResource H1Style}" Text="Media Viewport" HorizontalAlignment="Center"/>
-                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Reserved for future media rendering. No playback in this phase." HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap"/>
-                    </StackPanel>
                     <Border Grid.Row="1" Background="{DynamicResource Surface1Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,0,0" Padding="12">
-                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Status: Ready (static prototype)"/>
+                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Media viewport (reserved for future rendering)"/>
                     </Border>
                 </Grid>
             </Border>
         </Grid>
 
-        <!-- Bottom control region (reserved) -->
+        <!-- Bottom control region -->
         <Border Grid.Row="2" Background="{DynamicResource Surface1Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Margin="12,0,12,12" CornerRadius="12">
             <Grid Margin="16,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource CaptionStyle}" Text="Playback controls (reserved) — non-functional placeholders" VerticalAlignment="Center"/>
+                <TextBlock x:Name="StatusText" Style="{StaticResource CaptionStyle}" Text="No media loaded" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="40" Height="32" Margin="4" Background="{DynamicResource Surface2Brush}" CornerRadius="8"/>
-                    <Border Width="40" Height="32" Margin="4" Background="{DynamicResource Surface2Brush}" CornerRadius="8"/>
-                    <Border Width="40" Height="32" Margin="4" Background="{DynamicResource Surface2Brush}" CornerRadius="8"/>
+                    <Button x:Name="OpenButton" Style="{StaticResource PrimaryButtonStyle}" Content="Open" Click="OpenButton_Click" Margin="0,0,8,0"/>
+                    <Button x:Name="PlayButton" Style="{StaticResource GhostButtonStyle}" Content="Play" Click="PlayButton_Click" Margin="0,0,8,0"/>
+                    <Button x:Name="PauseButton" Style="{StaticResource GhostButtonStyle}" Content="Pause" Click="PauseButton_Click" Margin="0,0,8,0"/>
+                    <Button x:Name="StopButton" Style="{StaticResource GhostButtonStyle}" Content="Stop" Click="StopButton_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
