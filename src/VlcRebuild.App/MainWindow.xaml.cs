@@ -638,12 +638,6 @@ public partial class MainWindow : Window
         ApplyVolume();
     }
 
-    private void ApplyVolume()
-    {
-        _mediaEngine.SetVolume((int)VolumeSlider.Value);
-        VolumeText.Text = ((int)VolumeSlider.Value).ToString();
-    }
-
     private void ProgressTimer_Tick(object? sender, EventArgs e)
     {
         if (_abEnabled && _abB > _abA && _mediaEngine is not null && _mediaEngine.Time >= _abB)
