@@ -31,3 +31,13 @@ jobs:
 
       - name: Test
         run: dotnet test VlcRebuild.sln -c Debug --no-build
+
+      - name: Publish (self-contained, win-x64)
+        run: dotnet publish src/VlcRebuild.App/VlcRebuild.App.csproj -c Release -r win-x64 --self-contained true -o ./publish
+
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LumenPlayer-win-x64
+          path: ./publish
+          if-no-files-found: error
