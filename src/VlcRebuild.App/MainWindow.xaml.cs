@@ -254,7 +254,7 @@ public partial class MainWindow : Window
         if (_mediaEngine.AddSubtitleFile(dialog.FileName))
         {
             StatusText.Text = $"Subtitle loaded: {Path.GetFileName(dialog.FileName)}";
-            RefreshSubtitleTracks();
+            RefreshSubtitleTracks(_mediaEngine);
         }
         else
         {
@@ -579,7 +579,7 @@ public partial class MainWindow : Window
                 AudioTrackComboBox.SelectedIndex = 0;
             }
 
-            RefreshSubtitleTracks();
+            RefreshSubtitleTracks(_mediaEngine);
         }
         finally
         {
