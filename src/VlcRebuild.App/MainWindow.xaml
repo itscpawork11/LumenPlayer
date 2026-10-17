@@ -3,16 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vlc="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
         Title="Lumen Player"
-        Width="1200" Height="760"
-        MinWidth="900" MinHeight="600"
+        Width="1280" Height="800"
+        MinWidth="980" MinHeight="640"
         Background="{DynamicResource BackgroundBrush}"
         Foreground="{DynamicResource TextPrimaryBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        KeyDown="Window_KeyDown"
+        AllowDrop="True"
+        Icon="Assets/icon.ico"
+        Drop="Window_Drop">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="72"/>
+            <RowDefinition Height="128"/>
         </Grid.RowDefinitions>
 
         <!-- Top bar -->
@@ -22,57 +26,156 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Style="{StaticResource H2Style}" Text="Lumen Player"/>
                     <TextBlock Style="{StaticResource CaptionStyle}" Text="  •  Media workspace" VerticalAlignment="Center" Margin="8,0,0,0"/>
                 </StackPanel>
-                <TextBlock Grid.Column="1" Style="{StaticResource CaptionStyle}" Text="Window commands (system)" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <ComboBox x:Name="RecentFilesComboBox" Width="260" Margin="0,0,12,0" SelectionChanged="RecentFilesComboBox_SelectionChanged"/>
+                    <TextBlock Style="{StaticResource CaptionStyle}" Text="F11 fullscreen • Space play/pause • M mute" VerticalAlignment="Center"/>
+                </StackPanel>
             </Grid>
         </Border>
 
         <!-- Main area -->
         <Grid Grid.Row="1" Margin="12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260" MinWidth="200"/>
+                <ColumnDefinition Width="300" MinWidth="220"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Sidebar (reserved) -->
+            <!-- Playlist -->
             <Border Grid.Column="0" Margin="0,0,12,0" Background="{DynamicResource Surface1Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
-                <StackPanel Margin="16">
-                    <TextBlock Style="{StaticResource H2Style}" Text="Library"/>
-                    <TextBlock Style="{StaticResource CaptionStyle}" Text="Media &amp; playlist panel (reserved)" Margin="0,8,0,0" TextWrapping="Wrap"/>
-                </StackPanel>
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource H2Style}" Text="Playlist"/>
+                    <ListBox x:Name="PlaylistBox" Grid.Row="1" Margin="0,10,0,10"
+                             Background="{DynamicResource Surface2Brush}" Foreground="{DynamicResource TextPrimaryBrush}"
+                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                             DisplayMemberPath="DisplayName" SelectionChanged="PlaylistBox_SelectionChanged"
+                             MouseDoubleClick="PlaylistBox_MouseDoubleClick"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="Add" Click="AddFilesButton_Click" Margin="0,0,6,0"/>
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="Remove" Click="RemoveSelectedButton_Click" Margin="0,0,6,0"/>
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="Clear" Click="ClearPlaylistButton_Click" Margin="0,0,6,0"/>
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="Up" Click="MoveUpButton_Click" Margin="0,0,6,0"/>
+                        <Button Style="{StaticResource GhostButtonStyle}" Content="Down" Click="MoveDownButton_Click"/>
+                    </StackPanel>
+                </Grid>
             </Border>
 
-            <!-- Main viewing area -->
+            <!-- Viewport -->
             <Border Grid.Column="1" Background="{DynamicResource Surface2Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <vlc:VideoView x:Name="VideoSurface" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <vlc:VideoView x:Name="VideoSurface" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed"/>
+                    <Border x:Name="EmptyState" Grid.Row="0" Grid.RowSpan="2" Background="{DynamicResource Surface2Brush}" Visibility="Visible">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Style="{StaticResource H1Style}" Text="Media Viewport" HorizontalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource CaptionStyle}" Text="Open a file or drag media into the window." HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
                     <Border Grid.Row="1" Background="{DynamicResource Surface1Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,1,0,0" Padding="12">
-                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Media viewport (reserved for future rendering)"/>
+                        <TextBlock x:Name="ViewportStatusText" Style="{StaticResource CaptionStyle}" Text="No media loaded"/>
                     </Border>
                 </Grid>
             </Border>
         </Grid>
 
-        <!-- Bottom control region -->
+        <!-- Bottom controls -->
         <Border Grid.Row="2" Background="{DynamicResource Surface1Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Margin="12,0,12,12" CornerRadius="12">
-            <Grid Margin="16,0">
+            <Grid Margin="16,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="StatusText" Style="{StaticResource CaptionStyle}" Text="No media loaded" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="OpenButton" Style="{StaticResource PrimaryButtonStyle}" Content="Open" Click="OpenButton_Click" Margin="0,0,8,0"/>
-                    <Button x:Name="PlayButton" Style="{StaticResource GhostButtonStyle}" Content="Play" Click="PlayButton_Click" Margin="0,0,8,0"/>
-                    <Button x:Name="PauseButton" Style="{StaticResource GhostButtonStyle}" Content="Pause" Click="PauseButton_Click" Margin="0,0,8,0"/>
-                    <Button x:Name="StopButton" Style="{StaticResource GhostButtonStyle}" Content="Stop" Click="StopButton_Click"/>
+
+                <!-- Seek -->
+                <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="CurrentTimeText" Style="{StaticResource CaptionStyle}" Text="00:00" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <Slider x:Name="SeekSlider" Grid.Column="1" Minimum="0" Maximum="1000" Value="0" IsMoveToPointEnabled="True" PreviewMouseLeftButtonDown="SeekSlider_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="SeekSlider_PreviewMouseLeftButtonUp" ValueChanged="SeekSlider_ValueChanged"/>
+                    <TextBlock x:Name="DurationText" Grid.Column="2" Style="{StaticResource CaptionStyle}" Text="00:00" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </Grid>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Content="Open" Click="OpenButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Play" Click="PlayButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Pause" Click="PauseButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Stop" Click="StopButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Previous" Click="PreviousButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Next" Click="NextButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Mute" Click="MuteButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Fullscreen" Click="FullscreenButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Subtitle file" Click="LoadSubtitleButton_Click" Margin="0,0,8,0"/>
+                    <ComboBox x:Name="SpeedComboBox" Width="76" Margin="0,0,8,0" SelectedIndex="1" SelectionChanged="SpeedComboBox_SelectionChanged">
+                        <ComboBoxItem Content="0.5x"/>
+                        <ComboBoxItem Content="1.0x"/>
+                        <ComboBoxItem Content="1.25x"/>
+                        <ComboBoxItem Content="1.5x"/>
+                        <ComboBoxItem Content="2.0x"/>
+                    </ComboBox>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Snapshot" Click="SnapshotButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Always on top" Click="AlwaysOnTopButton_Click" Margin="0,0,8,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Mini mode" Click="MiniModeButton_Click" Margin="0,0,8,0"/>
+                    <CheckBox x:Name="LoopCheckBox" Content="Loop" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <CheckBox x:Name="AutoNextCheckBox" Content="Auto next" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <TextBlock Style="{StaticResource CaptionStyle}" Text="Volume" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <Slider x:Name="VolumeSlider" Width="120" Minimum="0" Maximum="100" Value="70" ValueChanged="VolumeSlider_ValueChanged"/>
+                    <TextBlock x:Name="VolumeText" Style="{StaticResource CaptionStyle}" Text="70" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                </StackPanel>
+
+                <!-- Tracks + status -->
+                <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="StatusText" Style="{StaticResource CaptionStyle}" Text="No media loaded" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Audio" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ComboBox x:Name="AudioTrackComboBox" Width="150" SelectionChanged="AudioTrackComboBox_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <TextBlock Style="{StaticResource CaptionStyle}" Text="Subtitle" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <ComboBox x:Name="SubtitleTrackComboBox" Width="150" SelectionChanged="SubtitleTrackComboBox_SelectionChanged"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Advanced tools -->
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Set A" Click="SetAButton_Click" Margin="0,0,6,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Set B" Click="SetBButton_Click" Margin="0,0,6,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Clear A-B" Click="ClearAbButton_Click" Margin="0,0,12,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Sub -0.5s" Click="SubtitleDelayMinus_Click" Margin="0,0,4,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Sub +0.5s" Click="SubtitleDelayPlus_Click" Margin="0,0,12,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Audio -0.5s" Click="AudioDelayMinus_Click" Margin="0,0,4,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Audio +0.5s" Click="AudioDelayPlus_Click" Margin="0,0,12,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Aspect 16:9" Click="AspectRatioButton_Click" Margin="0,0,6,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Media info" Click="MediaInfoButton_Click" Margin="0,0,6,0"/>
+                    <Button Style="{StaticResource GhostButtonStyle}" Content="Recent" Click="RecentButton_Click"/>
                 </StackPanel>
             </Grid>
         </Border>

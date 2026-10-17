@@ -62,6 +62,69 @@ public sealed class MediaEngine : IDisposable
         _mediaPlayer.Mute = !_mediaPlayer.Mute;
     }
 
+    public void SetAudioTrack(int trackId)
+    {
+        if (_mediaPlayer is null) return;
+        _mediaPlayer.AudioTrack = trackId;
+    }
+
+    public void SetSubtitleTrack(int trackId)
+    {
+        if (_mediaPlayer is null) return;
+        _mediaPlayer.Spu = trackId;
+    }
+
+    public bool AddSubtitleFile(string path)
+    {
+        if (_mediaPlayer is null || string.IsNullOrWhiteSpace(path)) return false;
+        try
+        {
+            _mediaPlayer.AddSubtitle(path);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public void SetPlaybackRate(float rate)
+    {
+        if (_mediaPlayer is null) return;
+        try
+        {
+            _mediaPlayer.SetRate(rate);
+        }
+        catch
+        {
+            // Keep playback running if rate control is unavailable.
+        }
+    }
+
+    public bool TakeSnapshot(string path)
+    {
+        if (_mediaPlayer is null || string.IsNullOrWhiteSpace(path)) return false;
+        try
+        {
+            _mediaPlayer.TakeSnapshot(0, path, 0, 0);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public TrackDescription[] GetAudioTracks()
+    {
+        return _mediaPlayer?.AudioTrackDescription ?? Array.Empty<TrackDescription>();
+    }
+
+    public TrackDescription[] GetSubtitleTracks()
+    {
+        return _mediaPlayer?.SpuDescription ?? Array.Empty<TrackDescription>();
+    }
+
     public long Time => _mediaPlayer?.Time ?? 0;
     public long Length => _mediaPlayer?.Length ?? 0;
     public bool IsPlaying => _mediaPlayer?.IsPlaying ?? false;
