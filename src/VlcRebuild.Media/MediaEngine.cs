@@ -6,7 +6,7 @@ public sealed class MediaEngine : IDisposable
 {
     private LibVLC? _libVlc;
     private MediaPlayer? _mediaPlayer;
-    private Media? _currentMedia;
+    private LibVLCSharp.Shared.Media? _currentMedia;
     private bool _disposed;
 
     public MediaPlayer? Player => _mediaPlayer;
@@ -35,7 +35,7 @@ public sealed class MediaEngine : IDisposable
         EnsureInitialized();
         if (_mediaPlayer is null || _libVlc is null) return false;
         _currentMedia?.Dispose();
-        _currentMedia = new Media(_libVlc, path, FromType.FromPath);
+        _currentMedia = new LibVLCSharp.Shared.Media(_libVlc, path, FromType.FromPath);
         _mediaPlayer.Media = _currentMedia;
         return true;
     }

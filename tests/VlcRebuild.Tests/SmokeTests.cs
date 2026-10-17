@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace VlcRebuild.Tests;
 
 public class SmokeTests
