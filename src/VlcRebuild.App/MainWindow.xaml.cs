@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LibVLCSharp.Shared;
+using LibVLCSharp.Shared.Structures;
 using Microsoft.Win32;
 using VlcRebuild.Media;
 using VlcRebuild.Playlist;
@@ -23,6 +24,8 @@ public partial class MainWindow : Window
     private long _abA = -1;
     private long _abB = -1;
     private bool _abEnabled;
+    private bool _isSeeking;
+    private bool _isUpdatingTracks;
     private bool _isFullscreen;
     private WindowState _previousWindowState;
     private WindowStyle _previousWindowStyle;
@@ -537,7 +540,12 @@ public partial class MainWindow : Window
         System.Windows.MessageBox.Show(this, info, "Media info", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
     }
 
-    private void ResetPlaybackUi()
+    private void AddFilesButton_Click(object sender, RoutedEventArgs e) => OpenButton_Click(sender, e);
+
+    private void RecentButton_Click(object sender, RoutedEventArgs e)
+    {
+        RecentFilesComboBox.IsDropDownOpen = true;
+    }
     {
         SeekSlider.Value = 0;
         CurrentTimeText.Text = "00:00";
@@ -572,7 +580,7 @@ public partial class MainWindow : Window
                 AudioTrackComboBox.SelectedIndex = 0;
             }
 
-            RefreshSubtitleTracks(engine);
+            RefreshSubtitleTracks();
         }
         finally
         {
