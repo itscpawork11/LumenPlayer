@@ -8,6 +8,7 @@
     <AssemblyName>LumenPlayer</AssemblyName>
     <RootNamespace>LumenPlayer</RootNamespace>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\VlcRebuild.Media\VlcRebuild.Media.csproj"/>
