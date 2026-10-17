@@ -835,8 +835,8 @@ public partial class MainWindow : Window
             StatusText.Text = "Normal mode";
         }
     }
+    private void Window_Drop(object? sender, DragEventArgs e)
     {
-        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
         var files = (string[])e.Data.GetData(DataFormats.FileDrop);
         if (files is null || files.Length == 0) return;
 
