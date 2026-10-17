@@ -66,13 +66,13 @@ public sealed class MediaEngine : IDisposable
     public void SetAudioTrack(int trackId)
     {
         if (_mediaPlayer is null) return;
-        _mediaPlayer.AudioTrack = trackId;
+        _mediaPlayer.SetAudioTrack(trackId);
     }
 
     public void SetSubtitleTrack(int trackId)
     {
         if (_mediaPlayer is null) return;
-        _mediaPlayer.Spu = trackId;
+        _mediaPlayer.SetSpu(trackId);
     }
 
     public bool AddSubtitleFile(string path)
@@ -80,8 +80,7 @@ public sealed class MediaEngine : IDisposable
         if (_mediaPlayer is null || string.IsNullOrWhiteSpace(path)) return false;
         try
         {
-            _mediaPlayer.AddSubtitle(path);
-            return true;
+            return _mediaPlayer.AddSlave(MediaSlaveType.Subtitle, path, true);
         }
         catch
         {

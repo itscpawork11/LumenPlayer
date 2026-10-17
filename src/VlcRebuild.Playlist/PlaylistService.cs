@@ -1,8 +1,9 @@
 using System.Collections.ObjectModel;
 
 namespace VlcRebuild.Playlist;
+
+public sealed class PlaylistItem
 {
-    public string FilePath { get; }
     public string DisplayName { get; }
 
     public PlaylistItem(string filePath)
