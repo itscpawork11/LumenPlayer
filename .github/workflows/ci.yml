@@ -32,8 +32,17 @@ jobs:
       - name: Test
         run: dotnet test VlcRebuild.sln -c Debug --no-build
 
-      - name: Publish (self-contained, win-x64)
-        run: dotnet publish src/VlcRebuild.App/VlcRebuild.App.csproj -c Release -r win-x64 --self-contained true -o ./publish
+      - name: Publish (self-contained single-file, win-x64)
+        run: dotnet publish src/VlcRebuild.App/VlcRebuild.App.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:EnableCompressionInSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:IncludeAllContentForSelfExtract=true -o ./publish
+
+      - name: Report publish size
+        shell: pwsh
+        run: |
+          $exe = Get-Item ./publish/LumenPlayer.exe
+          $total = (Get-ChildItem ./publish -Recurse -File | Measure-Object -Property Length -Sum).Sum
+          Write-Host "LumenPlayer.exe size: $([math]::Round($exe.Length/1MB,2)) MB ($($exe.Length) bytes)"
+          Write-Host "Total publish size: $([math]::Round($total/1MB,2)) MB ($total bytes)"
+          Write-Host "Publish file count: $((Get-ChildItem ./publish -Recurse -File).Count)"
 
       - name: Upload publish artifact
         uses: actions/upload-artifact@v4

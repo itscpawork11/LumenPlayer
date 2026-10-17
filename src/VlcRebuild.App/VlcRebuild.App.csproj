@@ -17,4 +17,13 @@
     <PackageReference Include="LibVLCSharp.WPF" Version="3.10.2"/>
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24"/>
   </ItemGroup>
+
+  <Target Name="ExcludeNonX64LibVlcFromSingleFile" BeforeTargets="GenerateSingleFileBundle">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::new('%(RelativePath)').StartsWith('libvlc/win-x86/'))" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::new('%(RelativePath)').StartsWith('libvlc/win-arm64/'))" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::new('%(RelativePath)').StartsWith('libvlc\win-x86\'))" />
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::new('%(RelativePath)').StartsWith('libvlc\win-arm64\'))" />
+    </ItemGroup>
+  </Target>
 </Project>
