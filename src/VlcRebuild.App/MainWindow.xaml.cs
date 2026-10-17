@@ -546,9 +546,8 @@ public partial class MainWindow : Window
     {
         RecentFilesComboBox.IsDropDownOpen = true;
     }
+    private void ResetPlaybackUi()
     {
-        SeekSlider.Value = 0;
-        CurrentTimeText.Text = "00:00";
         DurationText.Text = "00:00";
         SeekSlider.IsEnabled = false;
         EmptyState.Visibility = Visibility.Visible;
