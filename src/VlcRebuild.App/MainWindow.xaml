@@ -48,11 +48,11 @@
             <!-- Main viewing area -->
             <Border Grid.Column="1" Background="{DynamicResource Surface2Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
                 <Grid>
-                    <vlc:VideoView x:Name="VideoSurface" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <vlc:VideoView x:Name="VideoSurface" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Style="{StaticResource H1Style}" Text="Media Viewport" HorizontalAlignment="Center"/>
                         <TextBlock Style="{StaticResource CaptionStyle}" Text="Reserved for future media rendering. No playback in this phase." HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap"/>
