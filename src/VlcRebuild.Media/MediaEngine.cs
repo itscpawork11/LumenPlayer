@@ -1,4 +1,5 @@
 using LibVLCSharp.Shared;
+using LibVLCSharp.Shared.Structures;
 
 namespace VlcRebuild.Media;
 

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-public sealed class PlaylistItem
+namespace VlcRebuild.Playlist;
 {
     public string FilePath { get; }
     public string DisplayName { get; }
