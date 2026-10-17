@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>LumenPlayer</AssemblyName>
+    <RootNamespace>LumenPlayer</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VlcRebuild.Media\VlcRebuild.Media.csproj"/>
+    <ProjectReference Include="..\VlcRebuild.Playlist\VlcRebuild.Playlist.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LibVLCSharp" Version="3.10.2"/>
+    <PackageReference Include="LibVLCSharp.WPF" Version="3.10.2"/>
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.24"/>
+  </ItemGroup>
+</Project>

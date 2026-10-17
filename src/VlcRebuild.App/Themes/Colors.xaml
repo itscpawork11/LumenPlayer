@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Backgrounds -->
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#0F1115"/>
+    <SolidColorBrush x:Key="Surface1Brush" Color="#171A21"/>
+    <SolidColorBrush x:Key="Surface2Brush" Color="#1F232C"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="#2A2F3A"/>
+    <!-- Text -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E6EAF2"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9AA4B2"/>
+    <!-- Accent -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#4FD1C5"/>
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#38B2AC"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#2C7A7B"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="#F56565"/>
+
+    <!-- Spacing tokens -->
+    <Thickness x:Key="Space2">2</Thickness>
+    <Thickness x:Key="Space4">4</Thickness>
+    <Thickness x:Key="Space8">8</Thickness>
+    <Thickness x:Key="Space12">12</Thickness>
+    <Thickness x:Key="Space16">16</Thickness>
+    <Thickness x:Key="Space24">24</Thickness>
+
+    <!-- Corner radius -->
+    <CornerRadius x:Key="Radius8">8</CornerRadius>
+    <CornerRadius x:Key="Radius12">12</CornerRadius>
+</ResourceDictionary>
