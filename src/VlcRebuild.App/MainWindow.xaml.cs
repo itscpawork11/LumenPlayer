@@ -691,7 +691,10 @@ public partial class MainWindow : Window
     private void ApplyVolume()
     {
         _mediaEngine?.SetVolume((int)VolumeSlider.Value);
-        VolumeText.Text = ((int)VolumeSlider.Value).ToString();
+        if (VolumeText is not null)
+        {
+            VolumeText.Text = ((int)VolumeSlider.Value).ToString();
+        }
     }
 
     private static string FormatTime(long ms)
